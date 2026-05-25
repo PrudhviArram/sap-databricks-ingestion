@@ -1,0 +1,30 @@
+name: Push to Databricks
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Databricks CLI
+      run: |
+        pip install databricks-cli
+
+    - name: Deploy Notebooks to Databricks Workspace
+      env:
+        DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      run: |
+        # This pushes your local notebooks folder into your Databricks Community folder
+        databricks workspace import_dir ./notebooks /Users/${{ secrets.DATABRICKS_USER_EMAIL }}/notebooks --overwrite
