@@ -17,7 +17,6 @@ LOCAL_DIR="./data/$TODAY"
 
 # --- Azure Storage Configurations ---
 AZURE_STORAGE_ACCOUNT="sapdataingest"
-AZURE_STORAGE_KEY="JmW9/t45TrZn0nhzXECELO51A8LBGZpvQe2sDyMEZsVt9aaj5GEaPh1x9ym4IoVPFpdSkcTYbL/W+AStJKGuYg=="
 AZURE_CONTAINER="sap-ingest-container"
 
 echo "=== Step 2: Uploading files to Azure ADLS Storage ==="
@@ -39,3 +38,5 @@ fi
 
 # This keeps the terminal open so you can read the error message!
 read -p "Press enter to close this window..."
+
+#Testing github actions
