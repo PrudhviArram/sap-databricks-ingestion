@@ -25,7 +25,7 @@ client = SecretClient(vault_url=vault_url, credential=credential)
 sas_token = client.get_secret("storage-sas-token").value
 
 # File path in container
-file_name = "input/20260525/financials.csv"
+file_name = "input/20260528/financials.csv"
 
 # Construct HTTPS URL
 file_url = (
