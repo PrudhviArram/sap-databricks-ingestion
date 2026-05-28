@@ -7,8 +7,8 @@ import pandas as pd
 storage_account = "sapdataingest"
 container_name = "sap-ingest-container"
 
-# SAS token
-# DO NOT include leading '?'
+# SAS token with read permissions, valid until 2026-06-27
+sas_token = "sv=2026-02-06&ss=b&srt=co&sp=rdlyx&se=2026-06-27T10:01:46Z&st=2026-05-27T01:46:46Z&spr=https&sig=SN9k%2BHmUPDKKtsHfku8Wb2dnhlqZreBXCBQLiIAoelQ%3D"
 
 # File path in container
 file_name = "input/20260525/financials.csv"
