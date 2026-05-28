@@ -1,15 +1,11 @@
 import pandas as pd
+from azure.identity import ClientSecretCredential
+from azure.keyvault.secrets import SecretClient
 
-# ============================================
 # Azure Blob Storage details
-# ============================================
 
 storage_account = "sapdataingest"
 container_name = "sap-ingest-container"
-
-# SAS token with read permissions, valid until 2026-06-27
-from azure.identity import ClientSecretCredential
-from azure.keyvault.secrets import SecretClient
 
 # Using Service Principal tp fetch the secret from Azure Key Vault
 credential = ClientSecretCredential(
@@ -24,41 +20,51 @@ client = SecretClient(vault_url=vault_url, credential=credential)
 # Fetch your secret
 sas_token = client.get_secret("storage-sas-token").value
 
-# File path in container
-file_name = "input/20260528/financials.csv"
+# Defining files to be ingested and their corresponding table names
+file_table_mapping = {
+    "financials.csv": "sap_financials_demo",
+    "materials.csv": "sap_materials_demo",
+    "sales_orders.csv": "sap_salesorders_demo"
+}
 
-# Construct HTTPS URL
-file_url = (
-    f"https://{storage_account}.blob.core.windows.net/"
-    f"{container_name}/{file_name}?{sas_token}"
-)
+# Folder path in the container
+folder_path = "input/20260528"
 
-print("Reading file from:")
-print(file_url)
+for file_name, table_name in file_table_mapping.items():
+    # Construct HTTPS URL
+    file_url = (
+        f"https://{storage_account}.blob.core.windows.net/"
+        f"{container_name}/{folder_path}/{file_name}?{sas_token}"
+    )
 
-# ============================================
-# Read CSV using pandas
-# ============================================
+    print("Reading file from:")
+    print(file_url)
 
-pdf = pd.read_csv(file_url)
+    # ============================================
+    # Read CSV using pandas
+    # ============================================
 
-print("Pandas DataFrame loaded successfully")
+    pdf = pd.read_csv(file_url)
 
-# ============================================
-# Convert pandas DataFrame to Spark DataFrame
-# ============================================
+    print("Pandas DataFrame loaded successfully")
 
-df = spark.createDataFrame(pdf)
+    # ============================================
+    # Convert pandas DataFrame to Spark DataFrame
+    # ============================================
 
-# Display data
-#display(df)
+    df = spark.createDataFrame(pdf)
 
-# Print schema
-#df.printSchema()
+    # Display data
+    #display(df)
 
-# Show rows
-#df.show(10, truncate=False)
+    # Print schema
+    #df.printSchema()
 
-df.write.mode("overwrite").saveAsTable("sap_financials_demo")
+    # Show rows
+    #df.show(10, truncate=False)
 
-# test github actions
+    df.write.mode("overwrite").saveAsTable("sap_financials_demo")
+
+    # test github actions
+
+print("All files ingested successfully!")
