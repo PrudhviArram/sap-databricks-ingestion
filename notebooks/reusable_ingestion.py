@@ -63,7 +63,7 @@ for file_name, table_name in file_table_mapping.items():
     # Show rows
     #df.show(10, truncate=False)
 
-    df.write.mode("overwrite").saveAsTable("sap_financials_demo")
+    df.write.mode("overwrite").saveAsTable(table_name)
 
     # test github actions
 
