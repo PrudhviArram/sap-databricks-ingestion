@@ -8,7 +8,21 @@ storage_account = "sapdataingest"
 container_name = "sap-ingest-container"
 
 # SAS token with read permissions, valid until 2026-06-27
-sas_token = "sv=2026-02-06&ss=b&srt=co&sp=rdlyx&se=2026-06-27T10:01:46Z&st=2026-05-27T01:46:46Z&spr=https&sig=SN9k%2BHmUPDKKtsHfku8Wb2dnhlqZreBXCBQLiIAoelQ%3D"
+from azure.identity import ClientSecretCredential
+from azure.keyvault.secrets import SecretClient
+
+# Using Service Principal tp fetch the secret from Azure Key Vault
+credential = ClientSecretCredential(
+    tenant_id="333c5841-d65f-498a-b748-1419a017eed7",
+    client_id="e44158a4-5da6-47e8-acae-a45d36c5f732", # Application ID
+    client_secret="Xvg8Q~v_J1B~Dc8DKKJXD6kuDBg53Y3tJaWOebmP"   # store THIS in dbutils.secrets
+)
+
+vault_url = "https://dbDemoKeyVault.vault.azure.net"
+client = SecretClient(vault_url=vault_url, credential=credential)
+
+# Fetch your secret
+sas_token = client.get_secret("storage-sas-token").value
 
 # File path in container
 file_name = "input/20260525/financials.csv"
